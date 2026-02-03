@@ -118,4 +118,16 @@ class ChatServiceThreadRuleTest {
 
         verify(threadRepository, times(1)).save(any(ThreadEntity::class.java))
     }
+
+    @Test
+    fun `30 minutes 59 seconds creates a new thread`() {
+        val request = ChatCreateRequest(question = "q")
+        val existing = ThreadEntity(id = 200L, user = user, lastMessageAt = now.minusMinutes(30).minusSeconds(59))
+        `when`(threadRepository.findFirstByUserOrderByLastMessageAtDesc(user)).thenReturn(existing)
+        stubCommon()
+
+        service.createChat(user.email, request)
+
+        verify(threadRepository, times(2)).save(any(ThreadEntity::class.java))
+    }
 }

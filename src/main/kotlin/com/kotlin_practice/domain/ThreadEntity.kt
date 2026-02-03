@@ -13,7 +13,7 @@ import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import org.hibernate.annotations.CreationTimestamp
 import java.time.OffsetDateTime
-import java.time.temporal.ChronoUnit
+import java.time.Duration
 
 @Entity
 @Table(
@@ -49,8 +49,8 @@ class ThreadEntity(
     val chats: MutableList<ChatEntity> = mutableListOf(),
 ) {
     fun isReusableAt(now: OffsetDateTime): Boolean {
-        val minutes = ChronoUnit.MINUTES.between(lastMessageAt, now)
-        return minutes <= 30
+        val elapsed = Duration.between(lastMessageAt, now)
+        return elapsed <= Duration.ofMinutes(30)
     }
 
     // JPA requires a no-arg constructor
