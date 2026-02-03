@@ -31,8 +31,11 @@ class AdminAnalyticsController(
         val email = currentEmail()
         val csv = reportService.generateChatsCsv(email)
         val filename = "chats-${OffsetDateTime.now().toLocalDate()}.csv"
-        response.contentType = "text/csv"
+        response.contentType = "text/csv; charset=UTF-8"
+        response.characterEncoding = "UTF-8"
         response.setHeader("Content-Disposition", "attachment; filename=\"$filename\"")
+        // Write UTF-8 BOM so Excel opens correctly
+        response.writer.write("\uFEFF")
         response.writer.write(csv)
     }
 
