@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres:15.8
+    container_name: kotlin_practice_db
+    environment:
+      POSTGRES_DB: kotlin_practice
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
