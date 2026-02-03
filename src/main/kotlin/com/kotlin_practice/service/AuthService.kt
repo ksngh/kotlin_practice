@@ -5,6 +5,8 @@ import com.kotlin_practice.domain.UserRole
 import com.kotlin_practice.dto.AuthResponse
 import com.kotlin_practice.dto.LoginRequest
 import com.kotlin_practice.dto.SignUpRequest
+import com.kotlin_practice.domain.LoginEventEntity
+import com.kotlin_practice.repository.LoginEventRepository
 import com.kotlin_practice.repository.UserRepository
 import com.kotlin_practice.security.JwtProvider
 import org.springframework.http.HttpStatus
@@ -17,6 +19,7 @@ class AuthService(
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
     private val jwtProvider: JwtProvider,
+    private val loginEventRepository: LoginEventRepository,
 ) {
     fun signUp(request: SignUpRequest): AuthResponse {
         if (userRepository.existsByEmail(request.email)) {
@@ -42,6 +45,7 @@ class AuthService(
             throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials")
         }
 
+        loginEventRepository.save(LoginEventEntity(user = user))
         val token = jwtProvider.generateToken(user.email)
         return AuthResponse(token)
     }
