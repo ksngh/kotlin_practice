@@ -12,3 +12,9 @@ security:
   jwt:
     secret: "JIWGOeJsf7oE1YLs9ClVrY6tVAclJMwV3mF3NYUiIkKMVK2qlXyYT3u_npMLinYY"
     expiration-seconds: 360000
+
+openai:
+  api:
+    key: ${OPENAI_API_KEY:}
+    base-url: https://api.openai.com/v1
+    model: gpt-4o-mini
