@@ -10,7 +10,7 @@ Base URL: `http://localhost:8080`
 
 ## 회원 가입
 
-POST `/auth/signup`
+POST `/signup`
 
 Request JSON
 ```json
@@ -39,7 +39,7 @@ Possible errors
 
 ## 로그인
 
-POST `/auth/login`
+POST `/login`
 
 Request JSON
 ```json
