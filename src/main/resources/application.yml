@@ -18,3 +18,6 @@ openai:
     key: ${OPENAI_API_KEY:}
     base-url: https://api.openai.com/v1
     model: gpt-4o-mini
+  retry:
+    max-attempts: 3
+    backoff-ms: 500

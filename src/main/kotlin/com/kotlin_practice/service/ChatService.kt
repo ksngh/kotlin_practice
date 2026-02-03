@@ -22,7 +22,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
 import java.time.OffsetDateTime
-import java.time.temporal.ChronoUnit
+import java.time.Clock
 import java.util.concurrent.CompletableFuture
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
 
@@ -33,13 +33,14 @@ class ChatService(
     private val chatRepository: ChatRepository,
     private val openAiClient: OpenAiClient,
     @Value("\${openai.api.model}") private val defaultModel: String,
+    private val clock: Clock,
 ) {
     @Transactional
     fun createChat(email: String, request: ChatCreateRequest): ChatResponse {
         val user = userRepository.findByEmail(email)
             ?: throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found")
 
-        val now = OffsetDateTime.now()
+        val now = OffsetDateTime.now(clock)
         val thread = findOrCreateThread(user = user, now = now)
         val messages = buildMessages(thread.id, request.question)
 
@@ -78,7 +79,7 @@ class ChatService(
         val user = userRepository.findByEmail(email)
             ?: throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found")
 
-        val now = OffsetDateTime.now()
+        val now = OffsetDateTime.now(clock)
         val thread = findOrCreateThread(user = user, now = now)
         val messages = buildMessages(thread.id, request.question)
         val model = request.model?.ifBlank { null } ?: defaultModel
@@ -211,8 +212,7 @@ class ChatService(
                 ),
             )
         }
-        val minutes = ChronoUnit.MINUTES.between(latest.lastMessageAt, now)
-        return if (minutes >= 30) {
+        return if (!latest.isReusableAt(now)) {
             threadRepository.save(
                 ThreadEntity(
                     user = user,

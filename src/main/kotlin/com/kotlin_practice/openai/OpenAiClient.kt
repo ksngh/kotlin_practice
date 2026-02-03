@@ -4,15 +4,22 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.swagger.v3.oas.annotations.media.Schema
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.WebClientResponseException
+import org.springframework.web.server.ResponseStatusException
 import reactor.core.publisher.Flux
+import reactor.util.retry.Retry
+import java.time.Duration
 
 @Component
 class OpenAiClient(
     @Value("\${openai.api.key}") private val apiKey: String,
     @Value("\${openai.api.base-url}") private val baseUrl: String,
+    @Value("\${openai.retry.max-attempts}") private val maxAttempts: Long,
+    @Value("\${openai.retry.backoff-ms}") private val backoffMs: Long,
     private val objectMapper: ObjectMapper,
 ) {
     private val webClient: WebClient = WebClient.builder()
@@ -21,14 +28,19 @@ class OpenAiClient(
         .build()
 
     fun createResponse(request: OpenAiResponseRequest): String {
-        val json = webClient.post()
-            .uri("/responses")
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(request)
-            .retrieve()
-            .bodyToMono(String::class.java)
-            .block()
-            ?: error("Empty OpenAI response")
+        val json = try {
+            webClient.post()
+                .uri("/responses")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(request)
+                .retrieve()
+                .bodyToMono(String::class.java)
+                .retryWhen(retry429())
+                .block()
+                ?: error("Empty OpenAI response")
+        } catch (ex: WebClientResponseException.TooManyRequests) {
+            throw ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "OpenAI rate limit", ex)
+        }
 
         return extractText(json)
     }
@@ -41,6 +53,7 @@ class OpenAiClient(
             .bodyValue(request.copy(stream = true))
             .retrieve()
             .bodyToFlux(String::class.java)
+            .retryWhen(retry429())
             .flatMapIterable { chunk -> parseSseChunk(chunk) }
             .filter { it.isNotEmpty() }
     }
@@ -81,6 +94,11 @@ class OpenAiClient(
             }
         }
         return sb.toString()
+    }
+
+    private fun retry429(): Retry {
+        return Retry.backoff(maxAttempts, Duration.ofMillis(backoffMs))
+            .filter { ex -> ex is WebClientResponseException.TooManyRequests }
     }
 }
 
