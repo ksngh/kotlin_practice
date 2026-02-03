@@ -37,7 +37,7 @@ class ChatService(
 ) {
     @Transactional
     fun createChat(email: String, request: ChatCreateRequest): ChatResponse {
-        val user = userRepository.findByEmail(email)
+        val user = userRepository.findByEmailForUpdate(email)
             ?: throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found")
 
         val now = OffsetDateTime.now(clock)
@@ -76,7 +76,7 @@ class ChatService(
 
     @Transactional
     fun streamChat(email: String, request: ChatCreateRequest): SseEmitter {
-        val user = userRepository.findByEmail(email)
+        val user = userRepository.findByEmailForUpdate(email)
             ?: throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found")
 
         val now = OffsetDateTime.now(clock)
