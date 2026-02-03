@@ -4,10 +4,6 @@
 - Kotlin 1.9.x
 - Spring Boot 3.x.x
 - PostgreSQL 15.8
-- Spring Security (JWT 인증)
-- JPA (Hibernate)
-- OpenAI Responses API
-- Docker Compose
 
 ## 요구사항
 
