@@ -5,7 +5,7 @@ import com.kotlin_practice.domain.ThreadEntity
 import com.kotlin_practice.domain.UserEntity
 import com.kotlin_practice.domain.UserRole
 import com.kotlin_practice.dto.ChatCreateRequest
-import com.kotlin_practice.openai.OpenAiClient
+import com.kotlin_practice.openai.AiClient
 import com.kotlin_practice.repository.ChatRepository
 import com.kotlin_practice.repository.ThreadRepository
 import com.kotlin_practice.repository.UserRepository
@@ -24,7 +24,7 @@ class ChatServiceThreadRuleTest {
     private val userRepository = mock(UserRepository::class.java)
     private val threadRepository = mock(ThreadRepository::class.java)
     private val chatRepository = mock(ChatRepository::class.java)
-    private val openAiClient = mock(OpenAiClient::class.java)
+    private val openAiClient = mock(AiClient::class.java)
 
     private val fixedInstant = Instant.parse("2026-02-03T06:00:00Z")
     private val fixedClock = Clock.fixed(fixedInstant, ZoneOffset.UTC)

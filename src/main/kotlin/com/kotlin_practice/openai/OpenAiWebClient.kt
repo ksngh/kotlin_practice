@@ -15,19 +15,19 @@ import reactor.util.retry.Retry
 import java.time.Duration
 
 @Component
-class OpenAiClient(
+class OpenAiWebClient(
     @Value("\${openai.api.key}") private val apiKey: String,
     @Value("\${openai.api.base-url}") private val baseUrl: String,
     @Value("\${openai.retry.max-attempts}") private val maxAttempts: Long,
     @Value("\${openai.retry.backoff-ms}") private val backoffMs: Long,
     private val objectMapper: ObjectMapper,
-) {
+) : AiClient {
     private val webClient: WebClient = WebClient.builder()
         .baseUrl(baseUrl)
         .defaultHeader("Authorization", "Bearer $apiKey")
         .build()
 
-    fun createResponse(request: OpenAiResponseRequest): String {
+    override fun createResponse(request: OpenAiResponseRequest): String {
         val json = try {
             webClient.post()
                 .uri("/responses")
@@ -45,7 +45,7 @@ class OpenAiClient(
         return extractText(json)
     }
 
-    fun streamResponse(request: OpenAiResponseRequest): Flux<String> {
+    override fun streamResponse(request: OpenAiResponseRequest): Flux<String> {
         return webClient.post()
             .uri("/responses")
             .contentType(MediaType.APPLICATION_JSON)

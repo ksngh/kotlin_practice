@@ -8,7 +8,7 @@ import com.kotlin_practice.dto.ChatItemResponse
 import com.kotlin_practice.dto.ChatResponse
 import com.kotlin_practice.dto.ThreadPageResponse
 import com.kotlin_practice.dto.ThreadResponse
-import com.kotlin_practice.openai.OpenAiClient
+import com.kotlin_practice.openai.AiClient
 import com.kotlin_practice.openai.OpenAiMessage
 import com.kotlin_practice.openai.OpenAiResponseRequest
 import com.kotlin_practice.repository.ChatRepository
@@ -31,7 +31,7 @@ class ChatService(
     private val userRepository: UserRepository,
     private val threadRepository: ThreadRepository,
     private val chatRepository: ChatRepository,
-    private val openAiClient: OpenAiClient,
+    private val openAiClient: AiClient,
     @Value("\${openai.api.model}") private val defaultModel: String,
     private val clock: Clock,
 ) {
