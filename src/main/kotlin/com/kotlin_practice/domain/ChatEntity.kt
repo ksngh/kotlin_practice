@@ -13,7 +13,14 @@ import org.hibernate.annotations.CreationTimestamp
 import java.time.OffsetDateTime
 
 @Entity
-@Table(name = "chats")
+@Table(
+    name = "chats",
+    indexes = [
+        jakarta.persistence.Index(name = "idx_chats_thread_id", columnList = "thread_id"),
+        jakarta.persistence.Index(name = "idx_chats_user_id", columnList = "user_id"),
+        jakarta.persistence.Index(name = "idx_chats_created_at", columnList = "created_at"),
+    ],
+)
 class ChatEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

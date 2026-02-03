@@ -16,7 +16,14 @@ import java.time.OffsetDateTime
 import java.time.temporal.ChronoUnit
 
 @Entity
-@Table(name = "threads")
+@Table(
+    name = "threads",
+    indexes = [
+        jakarta.persistence.Index(name = "idx_threads_user_id", columnList = "user_id"),
+        jakarta.persistence.Index(name = "idx_threads_last_message_at", columnList = "last_message_at"),
+        jakarta.persistence.Index(name = "idx_threads_created_at", columnList = "created_at"),
+    ],
+)
 class ThreadEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
