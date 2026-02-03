@@ -10,11 +10,12 @@ import com.kotlin_practice.repository.ChatRepository
 import com.kotlin_practice.repository.ThreadRepository
 import com.kotlin_practice.repository.UserRepository
 import org.junit.jupiter.api.Test
-import org.mockito.ArgumentMatchers.any
+
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
+import org.mockito.kotlin.any
 import java.time.Clock
 import java.time.Instant
 import java.time.OffsetDateTime
@@ -50,9 +51,9 @@ class ChatServiceThreadRuleTest {
     )
 
     private fun stubCommon() {
-        `when`(userRepository.findByEmail(user.email)).thenReturn(user)
+        `when`(userRepository.findByEmailForUpdate(user.email)).thenReturn(user)
         `when`(openAiClient.createResponse(any())).thenReturn("answer")
-        `when`(threadRepository.save(any(ThreadEntity::class.java))).thenAnswer { invocation ->
+        `when`(threadRepository.save(any<ThreadEntity>())).thenAnswer { invocation ->
             val saved = invocation.arguments[0] as ThreadEntity
             ThreadEntity(
                 id = saved.id ?: 100L,
@@ -61,7 +62,7 @@ class ChatServiceThreadRuleTest {
                 lastMessageAt = saved.lastMessageAt,
             )
         }
-        `when`(chatRepository.save(any(ChatEntity::class.java))).thenAnswer { invocation ->
+        `when`(chatRepository.save(any<ChatEntity>())).thenAnswer { invocation ->
             val c = invocation.arguments[0] as ChatEntity
             ChatEntity(
                 id = 10L,
@@ -82,7 +83,7 @@ class ChatServiceThreadRuleTest {
 
         service.createChat(user.email, request)
 
-        verify(threadRepository, times(2)).save(any(ThreadEntity::class.java))
+        verify(threadRepository, times(2)).save(any<ThreadEntity>())
     }
 
     @Test
@@ -94,7 +95,7 @@ class ChatServiceThreadRuleTest {
 
         service.createChat(user.email, request)
 
-        verify(threadRepository, times(1)).save(any(ThreadEntity::class.java))
+        verify(threadRepository, times(1)).save(any<ThreadEntity>())
     }
 
     @Test
@@ -106,7 +107,7 @@ class ChatServiceThreadRuleTest {
 
         service.createChat(user.email, request)
 
-        verify(threadRepository, times(2)).save(any(ThreadEntity::class.java))
+        verify(threadRepository, times(2)).save(any<ThreadEntity>())
     }
 
     @Test
@@ -118,7 +119,7 @@ class ChatServiceThreadRuleTest {
 
         service.createChat(user.email, request)
 
-        verify(threadRepository, times(1)).save(any(ThreadEntity::class.java))
+        verify(threadRepository, times(1)).save(any<ThreadEntity>())
     }
 
     @Test
@@ -130,6 +131,6 @@ class ChatServiceThreadRuleTest {
 
         service.createChat(user.email, request)
 
-        verify(threadRepository, times(2)).save(any(ThreadEntity::class.java))
+        verify(threadRepository, times(2)).save(any<ThreadEntity>())
     }
 }
