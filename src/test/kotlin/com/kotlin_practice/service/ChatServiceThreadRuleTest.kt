@@ -25,6 +25,7 @@ class ChatServiceThreadRuleTest {
     private val threadRepository = mock(ThreadRepository::class.java)
     private val chatRepository = mock(ChatRepository::class.java)
     private val openAiClient = mock(AiClient::class.java)
+    private val chatPersistenceService = mock(ChatPersistenceService::class.java)
 
     private val fixedInstant = Instant.parse("2026-02-03T06:00:00Z")
     private val fixedClock = Clock.fixed(fixedInstant, ZoneOffset.UTC)
@@ -37,6 +38,7 @@ class ChatServiceThreadRuleTest {
         openAiClient = openAiClient,
         defaultModel = "gpt-4o-mini",
         clock = fixedClock,
+        chatPersistenceService = chatPersistenceService,
     )
 
     private val user = UserEntity(
