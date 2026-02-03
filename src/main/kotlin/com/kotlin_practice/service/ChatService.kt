@@ -4,8 +4,8 @@ import com.kotlin_practice.domain.ChatEntity
 import com.kotlin_practice.domain.ThreadEntity
 import com.kotlin_practice.domain.UserRole
 import com.kotlin_practice.dto.ChatCreateRequest
-import com.kotlin_practice.dto.ChatItemResponse
 import com.kotlin_practice.dto.ChatResponse
+import com.kotlin_practice.dto.ChatItemResponse
 import com.kotlin_practice.dto.ThreadPageResponse
 import com.kotlin_practice.dto.ThreadResponse
 import com.kotlin_practice.openai.AiClient
@@ -34,6 +34,7 @@ class ChatService(
     private val openAiClient: AiClient,
     @Value("\${openai.api.model}") private val defaultModel: String,
     private val clock: Clock,
+    private val chatPersistenceService: ChatPersistenceService,
 ) {
     @Transactional
     fun createChat(email: String, request: ChatCreateRequest): ChatResponse {
@@ -105,16 +106,13 @@ class ChatService(
                     emitter.send(SseEmitter.event().name("delta").data(delta))
                 }.doOnComplete {
                     val answer = answerBuilder.toString()
-                    val chat = chatRepository.save(
-                        ChatEntity(
-                            thread = thread,
-                            user = user,
-                            question = request.question,
-                            answer = answer,
-                        ),
+                    val chat = chatPersistenceService.saveChatAndUpdateThread(
+                        userId = user.id!!,
+                        threadId = thread.id!!,
+                        question = request.question,
+                        answer = answer,
+                        now = now,
                     )
-                    thread.lastMessageAt = now
-                    threadRepository.save(thread)
                     emitter.send(
                         SseEmitter.event()
                             .name("done")
