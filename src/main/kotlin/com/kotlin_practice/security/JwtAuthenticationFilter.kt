@@ -1,6 +1,4 @@
 package com.kotlin_practice.security
-
-import com.kotlin_practice.auth.JwtProvider
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -37,4 +35,3 @@ class JwtAuthenticationFilter(
         filterChain.doFilter(request, response)
     }
 }
-

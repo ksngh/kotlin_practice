@@ -1,5 +1,9 @@
-package com.kotlin_practice.auth
+package com.kotlin_practice.controller
 
+import com.kotlin_practice.dto.AuthResponse
+import com.kotlin_practice.dto.LoginRequest
+import com.kotlin_practice.dto.SignUpRequest
+import com.kotlin_practice.service.AuthService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -22,4 +26,3 @@ class AuthController(
         return authService.login(request)
     }
 }
-

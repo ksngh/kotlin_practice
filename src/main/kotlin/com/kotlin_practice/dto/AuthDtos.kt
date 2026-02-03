@@ -1,4 +1,4 @@
-package com.kotlin_practice.auth
+package com.kotlin_practice.dto
 
 data class SignUpRequest(
     val email: String,
@@ -14,4 +14,3 @@ data class LoginRequest(
 data class AuthResponse(
     val token: String,
 )
-

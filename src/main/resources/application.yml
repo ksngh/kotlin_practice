@@ -11,4 +11,4 @@ spring:
 security:
   jwt:
     secret: "JIWGOeJsf7oE1YLs9ClVrY6tVAclJMwV3mF3NYUiIkKMVK2qlXyYT3u_npMLinYY"
-    expiration-seconds: 3600
+    expiration-seconds: 360000

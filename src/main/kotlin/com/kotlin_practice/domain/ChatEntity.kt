@@ -1,9 +1,7 @@
-package com.kotlin_practice.user
+package com.kotlin_practice.domain
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
-import jakarta.persistence.EnumType
-import jakarta.persistence.Enumerated
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
@@ -12,26 +10,19 @@ import org.hibernate.annotations.CreationTimestamp
 import java.time.OffsetDateTime
 
 @Entity
-@Table(name = "users")
-class UserEntity(
+@Table(name = "chats")
+class ChatEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
 
-    @Column(nullable = false, unique = true)
-    val email: String,
+    @Column(nullable = false)
+    val question: String,
 
     @Column(nullable = false)
-    val password: String,
-
-    @Column(nullable = false)
-    val name: String,
+    val answer: String,
 
     @CreationTimestamp
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false, columnDefinition = "timestamptz")
     val createdAt: OffsetDateTime? = null,
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    val role: UserRole,
 )

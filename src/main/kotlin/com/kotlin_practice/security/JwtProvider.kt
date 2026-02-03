@@ -1,4 +1,4 @@
-package com.kotlin_practice.auth
+package com.kotlin_practice.security
 
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
@@ -49,4 +49,3 @@ class JwtProvider(
             .body
     }
 }
-

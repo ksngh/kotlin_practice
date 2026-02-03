@@ -1,6 +1,6 @@
 package com.kotlin_practice.security
 
-import com.kotlin_practice.user.UserRepository
+import com.kotlin_practice.repository.UserRepository
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetailsService
@@ -19,4 +19,3 @@ class CustomUserDetailsService(
         return User(user.email, user.password, listOf(authority))
     }
 }
-

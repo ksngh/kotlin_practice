@@ -1,8 +1,12 @@
-package com.kotlin_practice.auth
+package com.kotlin_practice.service
 
-import com.kotlin_practice.user.UserEntity
-import com.kotlin_practice.user.UserRepository
-import com.kotlin_practice.user.UserRole
+import com.kotlin_practice.domain.UserEntity
+import com.kotlin_practice.domain.UserRole
+import com.kotlin_practice.dto.AuthResponse
+import com.kotlin_practice.dto.LoginRequest
+import com.kotlin_practice.dto.SignUpRequest
+import com.kotlin_practice.repository.UserRepository
+import com.kotlin_practice.security.JwtProvider
 import org.springframework.http.HttpStatus
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -42,4 +46,3 @@ class AuthService(
         return AuthResponse(token)
     }
 }
-
